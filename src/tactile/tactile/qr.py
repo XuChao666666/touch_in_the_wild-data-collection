@@ -21,30 +21,32 @@ class QRCodeGeneratorNode(Node):
         self.get_logger().info("QR Code Generator Node started. Displaying updated QR code.")
         # Set the update period (in seconds); here 0.1 sec = 10 Hz update rate.
         self.timer_period = 1/30
-        self.timer = self.create_timer(self.timer_period, self.timer_callback)
+        self.timer = self.create_timer(self.timer_period, self.timer_callback)  # 创建ROS2定时器，周期执行timer_callback 
 
     def timer_callback(self):
         # Get the current ROS2 time.
         now_ros = self.get_clock().now()
         # For display purposes, use system time in UTC.
         now_utc = datetime.datetime.now(datetime.timezone.utc)
+        # 格式化为ISO8601字符串（精确到微秒）
         timestamp_str = now_utc.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         self.get_logger().debug(f"Current timestamp: {timestamp_str}")
 
         # Generate a QR code from the timestamp string.
         # Increase box_size to make the QR code larger.
+        # QR码参数配置
         qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=40,  # Larger box size makes the code display bigger
-            border=4
+            version=1,  # 版本1（21x21模块）
+            error_correction=qrcode.constants.ERROR_CORRECT_L,  # 低级错误纠正（可恢复7%数据）
+            box_size=35,  # Larger box size makes the code display bigger(每个模块的像素大小（最终图像尺寸≈840x840）)  原始：40  
+            border=4    # 边框模块数
         )
-        qr.add_data(timestamp_str)
-        qr.make(fit=True)
-        img = qr.make_image(fill_color="black", back_color="white")
+        qr.add_data(timestamp_str)  # 添加时间数据 
+        qr.make(fit=True)   # 自动调整版本以适应数据
+        img = qr.make_image(fill_color="black", back_color="white") # 生成黑白QR码图像 
 
         # Convert the PIL image to a NumPy array (in RGB format).
-        qr_image = np.array(img.convert('RGB'))
+        qr_image = np.array(img.convert('RGB')) # 转换为OpenCV可处理的numpy数组（RGB格式）
 
         # (Optional) Additional scaling with OpenCV if you want an even bigger image:
         # scale_factor = 2
