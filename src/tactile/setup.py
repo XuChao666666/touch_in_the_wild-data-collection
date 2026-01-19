@@ -26,8 +26,10 @@ setup(
         'console_scripts': [
             'tactile_viewer = tactile.tactile_viewer:main',
             'tactile_sensor = tactile.tactile_sensor:main',
+            'tactile_sensor_debug = tactile.tactile_sensor_debug:main',
             'test_viewer = tactile.test_viewer:main',
             'test_sensor = tactile.test_sensor:main',
+            'test_sensor2 = tactile.test_sensor2:main',
             'ffmpeg_v4l2_publisher = tactile.ffmpeg_v4l2_publisher:main',
             'ffmpeg_v4l2_subscriber = tactile.ffmpeg_v4l2_subscriber:main',
             'combined_subscriber = tactile.combined_subscriber:main',  # NEW ENTRY

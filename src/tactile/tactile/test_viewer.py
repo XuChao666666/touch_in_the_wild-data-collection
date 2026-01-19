@@ -13,7 +13,7 @@ from rclpy.node import Node
 from rummy_tactile_msgs.msg import TactileInput
 
 SCALE        = 50   # 图像放大倍数
-FRAME_SHAPE  = (12, 16)     # 触觉数据的原始形状；在数据发布的时候，裁掉了4行
+FRAME_SHAPE  = (12, 32)     # 触觉数据的原始形状；在数据发布的时候，裁掉了4行
 COLORMAP     = cv2.COLORMAP_VIRIDIS     # 使用Viridis配色方案（蓝-黄渐变）
 WIN          = "Tactile Viewer"     # OpenCV窗口名称
 STRIPE_W     = 5    # 左右图像间隔条的宽度（像素）

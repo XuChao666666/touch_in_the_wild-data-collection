@@ -80,7 +80,21 @@ class TactileSensorNodeLeft(Node):
                         break
                 block, t0 = [], time.time()     # 重置block和时间戳，准备接收下一个数据块
                 continue
-            block.append([int(v) for v in line.split()])   # 如果line长度≥10，则有line.split()：按空白字符分割字符串，得到一个字符串列表（如 "1 2 3" 分割为 ["1", "2", "3"]）。int(v)将每个字符串转换为整数；block.append(...)：将这行整数列表存入 block，积累为数据块的一部分。
+            
+            
+            raw_data = [int(v) for v in line.split()]
+            if len(raw_data) < 16:
+                # 计算现有数据的平均值
+                avg = sum(raw_data) / len(raw_data) if raw_data else 0  # 防止空列表
+                # 补全到16个元素
+                raw_data += [int(avg)] * (16 - len(raw_data))
+            elif len(raw_data) > 16:
+                # 超过16个则截断
+                raw_data = raw_data[:16]
+            block.append(raw_data)
+            
+            
+            # block.append([int(v) for v in line.split()])   # 如果line长度≥10，则有line.split()：按空白字符分割字符串，得到一个字符串列表（如 "1 2 3" 分割为 ["1", "2", "3"]）。int(v)将每个字符串转换为整数；block.append(...)：将这行整数列表存入 block，积累为数据块的一部分。
 
         self._median = np.median(np.array(samples), axis=0)     # sample是之前采集的传感器数据列表（存储了 30 + 个有效数据帧，每个帧是 16×32 的 NumPy 数组）。axis=0 表示沿着 “样本帧” 维度（第一个维度）计算中位数。
         self.get_logger().info("[LEFT] calibration complete")
@@ -92,7 +106,9 @@ class TactileSensorNodeLeft(Node):
             line = self.ser.readline().decode(errors="ignore").strip()  # 同上
             if len(line) < 10:
                 if len(block) == 16:
-                    latest = np.array(block)    # 当line的长度短的时候，处理之前的block；
+                    # for i in range(len(block[0])):
+                    #     print(f"block 列数:{len(block[i])}")
+                    latest = np.array(block)    # 根据测试，这段代码经常会出现丢包的情况，也就是说有时候某一行就不是16个元素，而是15个元素，所以这里要做一个修正；
                 block = []
                 if latest is not None:
                     frame = np.clip(latest - self._median - THRESHOLD, 0, 100)  # 当前数据减去校准阶段得到的中位数基准，再减去阈值（过滤微小噪声）；np.clip将处理后的数据限制在 0~100 范围内（超出部分截断）
@@ -100,14 +116,29 @@ class TactileSensorNodeLeft(Node):
                     filt  = _temporal_filter(norm, self._prev); self._prev = filt   # 调用时间域滤波函数，结合当前帧 norm 和上一帧数据 self._prev 进行平滑处理（减少数据抖动）。
                                                                                     # self._prev = filt：将当前滤波后的结果存入 self._prev，作为下一帧处理的历史参考。
 
+                    rotated_filt = np.flipud(filt) #  将16*16像素块旋转180度，与夹具适配。
                     msg = TactileInput()    # 创建 TactileInput 类型的消息对象
                     msg.header.stamp = self.get_clock().now().to_msg()  # 为消息添加 ROS 2 系统时间戳（通过节点时钟获取当前时间），用于同步不同节点的消息。
                     msg.local_time   = str(time.time())    # 将当前系统时间（浮点数）转换为字符串，存入消息的 local_time 字段
-                    msg.data = filt[4:].flatten().astype(float).tolist()    # filt[4:]：取滤波后数据从第 4 行开始的部分；.flatten()：将二维数组（16×32）展平为一维数组；.astype(float)：转换为浮点型；.tolist()：转换为 Python 列表（符合 ROS 2 消息对数组类型的要求）；
+                    msg.data = rotated_filt[:12].flatten().astype(float).tolist()    # filt[4:]：取滤波后数据从第 4 行开始的部分；.flatten()：将二维数组（16×32）展平为一维数组；.astype(float)：转换为浮点型；.tolist()：转换为 Python 列表（符合 ROS 2 消息对数组类型的要求）；
                     self._pub.publish(msg)  # 通过之前创建的发布者 self._pub，将消息发布到 tactile_input_left 话题（供其他节点订阅）。
                     self._last_pub = time.time()    # 存储当前时间戳，记录最后一次发布时间；
                 continue
-            block.append([int(v) for v in line.split()])
+
+            # 用这种方法来处理丢包的情况
+            raw_data = [int(v) for v in line.split()]
+            if len(raw_data) < 16:
+                # 计算现有数据的平均值
+                avg = sum(raw_data) / len(raw_data) if raw_data else 0  # 防止空列表
+                # 补全到16个元素
+                raw_data += [int(avg)] * (16 - len(raw_data)) # 相当于是raw_data.extend(new_list)的操作。
+            elif len(raw_data) > 16:
+                # 超过16个则截断
+                raw_data = raw_data[:16]
+            block.append(raw_data)            
+            
+            
+            # block.append([int(v) for v in line.split()])
 
 # 同上
 class TactileSensorNodeRight(Node):
@@ -172,10 +203,12 @@ class TactileSensorNodeRight(Node):
                     norm  = frame / (NOISE_SCALE if np.max(frame) < THRESHOLD else np.max(frame))
                     filt  = _temporal_filter(norm, self._prev); self._prev = filt
 
+                    # rotated_filt = np.flipud(np.fliplr(np.rot90(filt, k=5)))
+                    rotated_filt = np.flipud(np.rot90(filt, k=5))
                     msg = TactileInput()
                     msg.header.stamp = self.get_clock().now().to_msg()
                     msg.local_time   = str(time.time())
-                    msg.data = filt[4:].flatten().astype(float).tolist()
+                    msg.data = rotated_filt[:12].flatten().astype(float).tolist()
                     self._pub.publish(msg)
                     self._last_pub = time.time()
                 continue

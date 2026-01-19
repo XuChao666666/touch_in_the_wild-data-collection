@@ -1,0 +1,43 @@
+{
+    "ROS2.distro": "humble",
+    "python.autoComplete.extraPaths": [
+        "/home/xuchao666/touch_in_the_wild-data-collection/install/tactile/lib/python3.10/site-packages",
+        "/home/xuchao666/touch_in_the_wild-data-collection/install/rummy_tactile_msgs/local/lib/python3.10/dist-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_urdf/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_topic/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_tf/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_service/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_qos/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_pkg_python/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_parameter/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_node/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_launch/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_action/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_interface/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_gazebo_harmonic/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_gazebo/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_cv/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/xuchao666/touch_in_the_wild-data-collection/install/tactile/lib/python3.10/site-packages",
+        "/home/xuchao666/touch_in_the_wild-data-collection/install/rummy_tactile_msgs/local/lib/python3.10/dist-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_urdf/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_topic/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_tf/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_service/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_qos/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_pkg_python/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_parameter/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_node/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_launch/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_action/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_interface/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_gazebo_harmonic/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_gazebo/lib/python3.10/site-packages",
+        "/home/xuchao666/ROS2GYH/dev_ws/install/learning_cv/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

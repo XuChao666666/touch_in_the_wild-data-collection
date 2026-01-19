@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
-
 # 1. Start the rosbag2 recording
+# 定义输出目录（包含时间戳，确保唯一性）
 OUTPUT_DIR="tactile_recording_$(date +%Y%m%d_%H%M%S)"
-START_TIME=$(date +%s)
+START_TIME=$(date +%s)      # 记录开始时间（秒级 Unix 时间戳）
 
 echo "Starting rosbag2 recording in folder: $OUTPUT_DIR"
+# 启动 rosbag2 录制指定话题题，后台运行
+# 输入参数包括：
+    # 输出目录
+    # 左触觉传感器话题
+    # 右触觉传感器话题
+    # 保存录制进程的 PID（用于后续终止）
 ros2 bag record \
   --output "$OUTPUT_DIR" \
   /tactile_input_left \
   /tactile_input_right &
 RECORD_PID=$!
 
+# 设置中断信号处理（用户按 Ctrl+C 时，终止录制进程）
 trap "echo 'Stopping recording...'; kill -INT $RECORD_PID" SIGINT
 
+# 循环显示录制时长，每 5 秒更新一次
 while kill -0 $RECORD_PID 2>/dev/null; do
     NOW=$(date +%s)
     ELAPSED=$((NOW - START_TIME))
