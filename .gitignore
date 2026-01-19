@@ -2,4 +2,7 @@ build/
 install/
 log/
 *.pyc
-tactile_recording_*/
+.vscode/
+.DS_Store
+*.log
+**/tactile_recording_*/
